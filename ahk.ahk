@@ -11,7 +11,7 @@ class ahk
 		;	* the specified name as a .DLL file (ex. "AHK" would make the class look for "AHK.dll"), or
 		;	* a folder. If a folder is specified (or nothing), the class will look for AutoHotkey.dll in the x86a, x86w, or x64w folder below a specified path or the script"s directory.
 		
-		; If the specified path exists…store its attributes
+		; If the specified path existsâ€¦store its attributes
 		szPathAttribs:=FileExist(path)
 		
 		; If the specified path is a folder
@@ -20,20 +20,34 @@ class ahk
 		; If the path is a DLL file (must not be a folder)
 		cIsPathADLLFile:=!cIsPathADir?SubStr(path,StrLen(path)-3,4)=".DLL":false
 		
-		; Sets working directory…comes up with an automatic working directory if the specified path is a folder, doesn't exist, or isn't a DLL file
-		if(!szPathAttribs||cIsPathADir){ ; Path doesn't exist or is a folder
-			if(!szPathAttribs) ; Path doesn't exist
-				szDirName:=A_ScriptDir ; Set path to CWD of script
-			else ; Path exists, but is a folder
-				szDirName:=path ; Set the directory name to what the user specified
+		; Sets working directoryâ€¦comes up with an automatic working directory
+		; if the specified path is a folder, doesn't exist, or isn't a DLL file
+		
+		; Path doesn't exist or is a folder
+		if(!szPathAttribs||cIsPathADir){
+		
+			; Path doesn't exist
+			if(!szPathAttribs)
+			
+				; Set path to CWD of script
+				szDirName:=A_ScriptDir
+				
+			; Path exists, but is a folder
+			else
+				; Set the directory name to what the user specified
+				szDirName:=path
+			
 			; Append "\x", architecture, and "w" if unicode or "a" if ANSI
 			szDirName.="\x" (A_PtrSize=4?"86":"64") (A_IsUnicode?"w":"a")
+			
 			; Remove "\\x" just in case the directory name had a trailing "\"
 			szDirName:=StrReplace(szDirName,"\\x")
-		}else ; If the path is absolute, get the folder name of the file
+			
+		; If the path is absolute, get the folder name of the file
+		}else
 			szDirName:=RegExReplace(path,"(.*)\\.*","$1")
 		
-		; Sets file name…if the specified path is a folder or blank, file name is set to "AutoHotkey.dll"
+		; Sets file nameâ€¦if the specified path is a folder or blank, file name is set to "AutoHotkey.dll"
 		if(path=""||cIsPathADir)
 			szLibName:="AutoHotkey.dll"
 		else
